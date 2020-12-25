@@ -1,4 +1,4 @@
-package com.educards.nuts.retrofit
+package com.educards.nuts.retrofit2
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4

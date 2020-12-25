@@ -1,4 +1,4 @@
-package com.educards.nuts.retrofit
+package com.educards.nuts.retrofit2
 
 import org.junit.Test
 
