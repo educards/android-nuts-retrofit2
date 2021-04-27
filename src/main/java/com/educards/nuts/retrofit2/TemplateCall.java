@@ -50,13 +50,13 @@ public class TemplateCall<T> extends Request {
      * <ul>
      *      <li><code>true</code> if the call was successfully enqueued</li>
      *      <li><code>false</code> if call has not been executed due to missing
-     *      authentication token (@see {@link AuthTokenProvider#getAuthToken(Activity)})</li>
+     *      authentication token (@see {@link AuthTokenProvider#getInstalledAuthToken(Activity)})</li>
      * </ul>
      */
     public void enqueue(Activity activity, Template<T> template, final TemplateCallback<T> callback) {
 
         if (template == null) {
-            throw new RuntimeException(String.format("A network call scenario must be defined [call=%s].", call));
+            throw new RuntimeException(String.format("A network call template must be defined [call=%s].", call));
         }
 
         callback.setTemplate(template); // just a dependency hitch
@@ -88,7 +88,7 @@ public class TemplateCall<T> extends Request {
 
             @Override
             protected AuthToken doInBackground(Void... voids) {
-                return authTokenProvider.getAuthToken(activity);
+                return authTokenProvider.getInstalledAuthToken(activity);
             }
 
             @Override
@@ -103,7 +103,7 @@ public class TemplateCall<T> extends Request {
     }
 
     private void ensureAuthTokenAndEnqueue(Activity activity, TemplateCallback<T> callback) {
-        AuthToken authToken = authTokenProvider.getAuthToken(activity);
+        AuthToken authToken = authTokenProvider.getInstalledAuthToken(activity);
         if (authToken == null) {
             onMissingAuthTokenFailure(callback);
         } else {
@@ -119,9 +119,10 @@ public class TemplateCall<T> extends Request {
 
         // Send a signal to UI that this call failed.
         // UI might stop progress bar or do any similar UI cleanup here.
-        // We don't provide fail reason here since the getAndSyncAuthToken() already
+        // We don't provide any fail reason since the getInstalledAuthToken() already
         // handles the presentation layer by showing appropriate user message.
-        callback.onFailure(TemplateCall.this, null, null);
+        RequestFailReason failReason = /*null*/ RequestFailReason.AUTH_ERROR;
+        callback.onFailure(TemplateCall.this, null, failReason);
     }
 
     private void enqueueImpl(final TemplateCallback<T> callback) {
